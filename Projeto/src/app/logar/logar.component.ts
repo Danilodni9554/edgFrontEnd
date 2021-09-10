@@ -1,9 +1,9 @@
-
+import { AlertsService } from './../service/alerts.service';
+import { environment } from './../../environments/environment.prod';
+import { AuthService } from './../service/auth.service';
+import { UsuarioLogin } from './../model/UsuarioLogin';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { environment } from 'src/environments/environment.prod';
-import { UsuarioLogin } from '../model/UsuarioLogin';
-import { AuthService } from '../service/auth.service';
 
 @Component({
   selector: 'app-logar',
@@ -14,15 +14,17 @@ export class LogarComponent implements OnInit {
   usuarioLogin: UsuarioLogin = new UsuarioLogin
 
   constructor(
-  private authService: AuthService,
-  private router: Router
+    private authService: AuthService,
+    private router: Router,
+    private alert: AlertsService
   ) { }
-  
 
   ngOnInit() {
     window.scroll(0,0)
+    if(environment.token == ''){
+      this.router.navigate(['/login'])
+    }
   }
-
 
   logar(){
     this.authService.logar(this.usuarioLogin).subscribe((resp: UsuarioLogin) => {
@@ -35,13 +37,12 @@ export class LogarComponent implements OnInit {
       environment.id = this.usuarioLogin.id
       environment.senha = this.usuarioLogin.senha
 
-
-      this.router.navigate(['/inicio'])
-    },erro => {
+      this.router.navigate(['/tema'])
+    }, erro => {
       if (erro.status == 500){
-        alert("Senha ou email incorretos")
+        this.alert.alertDanger("Senha e/ou e-mail estão incorretos.")
       }
-    })  
- }
+    })
+  }
 
 }
