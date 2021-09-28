@@ -1,3 +1,4 @@
+import { AuthService } from './../service/auth.service';
 import { AlertsService } from './../service/alerts.service';
 import { Router } from '@angular/router';
 import { environment } from './../../environments/environment.prod';
@@ -25,10 +26,14 @@ export class TemaComponent implements OnInit {
   key = 'date'
   reverse = true
   email = environment.email
+  clickCurtir = false
+  totalCurtidas: number = 0
+
 
   constructor(
     private postService: PostsService,
     private temaService: TemaService,
+    public authService: AuthService,
     private router: Router,
     private alert: AlertsService
   ) { }
@@ -37,6 +42,14 @@ export class TemaComponent implements OnInit {
     window.scroll(0,0)
     if(environment.token == ''){
       this.router.navigate(['/login'])
+    }
+
+    if(environment.email == 'adm@edg.com'){
+      console.log("Você são desenvolvedores?")
+    }
+
+    if(this.clickCurtir == true){
+      console.log('O que fazer agora que já clicou?')
     }
 
     this.getAllPosts()
@@ -87,6 +100,15 @@ postar(){
 
   })
 }
+
+curtidas(){
+  this.clickCurtir = true
+  this.postagem.curtir = this.totalCurtidas + 1
+
+  //post getByCurtidas
+  //getAll pra atualizar
+}
+
 
 
 
